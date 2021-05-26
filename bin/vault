@@ -1,0 +1,14 @@
+#!/bin/bash
+
+[ ! -f "$(pwd)/.env" ] || ENV_FILE="--env-file $(pwd)/.env"
+
+EXECUTABLE=$(basename $0| sed 's/[0-9*.]//g')
+VERSION=$(basename $0| sed 's/[a-z-]//g')
+if [ "$VERSION" == "" ] || [ ! "$VERSION" ]; then
+	VERSION="latest"
+fi
+
+docker run -it --rm $ENV_FILE_GLOBAL $ENV_FILE \
+	-e 'SKIP_SETCAP=true' \
+	vault:$VERSION \
+	$EXECUTABLE "$@"
